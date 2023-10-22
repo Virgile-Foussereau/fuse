@@ -46,6 +46,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
 # tutorial_sim executable
 add_executable(range_sensor_simulator src/range_sensor_simulator.cpp)
+# add_executable(gps_to_msg src/gps_to_msg.py)
 target_link_libraries(range_sensor_simulator ${PROJECT_NAME})
 
 #############
@@ -79,6 +80,12 @@ install(TARGETS
 install(DIRECTORY launch config data
   DESTINATION share/${PROJECT_NAME}
 )
+
+install(PROGRAMS  
+src/gps_to_msg.py  
+DESTINATION lib/${PROJECT_NAME} )
+
+
 
 pluginlib_export_plugin_description_file(fuse_core fuse_plugins.xml)
 

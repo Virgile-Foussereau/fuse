@@ -48,9 +48,11 @@ add_library(${PROJECT_NAME}
   src/pose_2d.cpp
   src/transaction.cpp
   src/twist_2d.cpp
-  src/unicycle_2d.cpp
-  src/unicycle_2d_ignition.cpp
-  src/unicycle_2d_state_kinematic_constraint.cpp
+  #src/unicycle_2d.cpp
+  #src/unicycle_2d_ignition.cpp
+  #src/unicycle_2d_state_kinematic_constraint.cpp
+  src/bicycle_2d.cpp
+  src/bicycle_2d_state_kinematic_constraint.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -87,7 +89,7 @@ if(BUILD_TESTING)
   # This is because these two files have unsuitable copyrights
   set(_linter_excludes
     test/test_sensor_proc.cpp
-    test/test_unicycle_2d.cpp
+    #test/test_unicycle_2d.cpp
   )
   set(AMENT_LINT_AUTO_FILE_EXCLUDE ${_linter_excludes})
   ament_lint_auto_find_test_dependencies()

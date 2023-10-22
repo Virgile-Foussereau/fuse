@@ -71,7 +71,6 @@ target_link_libraries(fuse_echo_component PRIVATE rclcpp_components::component)
 rclcpp_components_register_node(fuse_echo_component
   PLUGIN "fuse_core::FuseEcho"
   EXECUTABLE fuse_echo
-  EXECUTOR SingleThreadedExecutor
 )
 
 #############
