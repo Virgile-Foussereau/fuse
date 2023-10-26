@@ -46,6 +46,7 @@
 #include <fuse_core/uuid.hpp>
 #include <fuse_core/variable.hpp>
 #include <fuse_models/common/sensor_proc.hpp>
+#include <fuse_models/common/std_utils.hpp>
 #include <fuse_models/parameters/parameter_base.hpp>
 #include <fuse_models/bicycle_2d.hpp>
 #include <fuse_models/bicycle_2d_predict.hpp>
@@ -61,36 +62,6 @@
 
 // Register this motion model with ROS as a plugin.
 PLUGINLIB_EXPORT_CLASS(fuse_models::Bicycle2D, fuse_core::MotionModel)
-
-namespace std
-{
-
-inline bool isfinite(const tf2_2d::Vector2 & vector)
-{
-  return std::isfinite(vector.x()) && std::isfinite(vector.y());
-}
-
-inline bool isfinite(const tf2_2d::Transform & transform)
-{
-  return std::isfinite(transform.x()) && std::isfinite(transform.y()) && std::isfinite(
-    transform.yaw());
-}
-
-std::string to_string(const tf2_2d::Vector2 & vector)
-{
-  std::ostringstream oss;
-  oss << vector;
-  return oss.str();
-}
-
-std::string to_string(const tf2_2d::Transform & transform)
-{
-  std::ostringstream oss;
-  oss << transform;
-  return oss.str();
-}
-
-}  // namespace std
 
 namespace fuse_core
 {
@@ -214,7 +185,7 @@ void Bicycle2D::onInit()
   if (process_noise_diagonal.size() != 9) {
   //print process_noise_diagonal values
   std::string process_noise_diagonal_string = "";
-  for (int i = 0; i < process_noise_diagonal.size(); i++) {
+  for (size_t i = 0; i < process_noise_diagonal.size(); i++) {
     process_noise_diagonal_string += std::to_string(process_noise_diagonal[i]) + " ";
   }
     throw std::runtime_error("Process noise diagonal is :" + process_noise_diagonal_string + " instead of size 9");
@@ -324,7 +295,7 @@ void Bicycle2D::generateMotionModel(
   if (dt == 0.0) {
     state1.position_uuid = fuse_variables::Position2DStamped(beginning_stamp, device_id_).uuid();
     state1.yaw_uuid = fuse_variables::Orientation2DStamped(beginning_stamp, device_id_).uuid();
-    state1.steering_uuid = fuse_variables::Orientation2DStamped(beginning_stamp, device_id_).uuid();
+    state1.steering_uuid = fuse_variables::SteeringAngle2DStamped(beginning_stamp, device_id_).uuid();
     state1.vel_linear_uuid =
       fuse_variables::VelocityLinear2DStamped(beginning_stamp, device_id_).uuid();
     state1.vel_yaw_uuid =
@@ -355,7 +326,7 @@ void Bicycle2D::generateMotionModel(
   // Define the fuse variables required for this constraint
   auto position1 = fuse_variables::Position2DStamped::make_shared(beginning_stamp, device_id_);
   auto yaw1 = fuse_variables::Orientation2DStamped::make_shared(beginning_stamp, device_id_);
-  auto steering1 = fuse_variables::Orientation2DStamped::make_shared(beginning_stamp, device_id_);
+  auto steering1 = fuse_variables::SteeringAngle2DStamped::make_shared(beginning_stamp, device_id_);
   auto velocity_linear1 = fuse_variables::VelocityLinear2DStamped::make_shared(
     beginning_stamp,
     device_id_);
@@ -366,7 +337,7 @@ void Bicycle2D::generateMotionModel(
     beginning_stamp, device_id_);
   auto position2 = fuse_variables::Position2DStamped::make_shared(ending_stamp, device_id_);
   auto yaw2 = fuse_variables::Orientation2DStamped::make_shared(ending_stamp, device_id_);
-  auto steering2 = fuse_variables::Orientation2DStamped::make_shared(ending_stamp, device_id_);
+  auto steering2 = fuse_variables::SteeringAngle2DStamped::make_shared(ending_stamp, device_id_);
   auto velocity_linear2 = fuse_variables::VelocityLinear2DStamped::make_shared(
     ending_stamp,
     device_id_);
@@ -380,7 +351,7 @@ void Bicycle2D::generateMotionModel(
   position1->data()[fuse_variables::Position2DStamped::X] = state1.pose.x();
   position1->data()[fuse_variables::Position2DStamped::Y] = state1.pose.y();
   yaw1->data()[fuse_variables::Orientation2DStamped::YAW] = state1.pose.yaw();
-  steering1->data()[fuse_variables::Orientation2DStamped::YAW] = state1.steering;
+  steering1->data()[fuse_variables::SteeringAngle2DStamped::YAW] = state1.steering;
   velocity_linear1->data()[fuse_variables::VelocityLinear2DStamped::X] = state1.velocity_linear.x();
   velocity_linear1->data()[fuse_variables::VelocityLinear2DStamped::Y] = state1.velocity_linear.y();
   velocity_yaw1->data()[fuse_variables::VelocityAngular2DStamped::YAW] = state1.velocity_yaw;
@@ -391,7 +362,7 @@ void Bicycle2D::generateMotionModel(
   position2->data()[fuse_variables::Position2DStamped::X] = state2.pose.x();
   position2->data()[fuse_variables::Position2DStamped::Y] = state2.pose.y();
   yaw2->data()[fuse_variables::Orientation2DStamped::YAW] = state2.pose.yaw();
-  steering2->data()[fuse_variables::Orientation2DStamped::YAW] = state2.steering;
+  steering2->data()[fuse_variables::SteeringAngle2DStamped::YAW] = state2.steering;
   velocity_linear2->data()[fuse_variables::VelocityLinear2DStamped::X] = state2.velocity_linear.x();
   velocity_linear2->data()[fuse_variables::VelocityLinear2DStamped::Y] = state2.velocity_linear.y();
   velocity_yaw2->data()[fuse_variables::VelocityAngular2DStamped::YAW] = state2.velocity_yaw;
@@ -528,7 +499,7 @@ void Bicycle2D::updateStateHistoryEstimates(
       current_state.pose.setX(position.data()[fuse_variables::Position2DStamped::X]);
       current_state.pose.setY(position.data()[fuse_variables::Position2DStamped::Y]);
       current_state.pose.setAngle(yaw.data()[fuse_variables::Orientation2DStamped::YAW]);
-      current_state.steering = steering.data()[fuse_variables::Orientation2DStamped::YAW];
+      current_state.steering = steering.data()[fuse_variables::SteeringAngle2DStamped::YAW];
       current_state.velocity_linear.setX(
         vel_linear.data()[fuse_variables::VelocityLinear2DStamped::
         X]);

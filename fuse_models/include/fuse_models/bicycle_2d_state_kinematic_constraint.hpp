@@ -45,6 +45,7 @@
 #include <fuse_core/uuid.hpp>
 #include <fuse_variables/acceleration_linear_2d_stamped.hpp>
 #include <fuse_variables/orientation_2d_stamped.hpp>
+#include <fuse_variables/steering_angle_2d_stamped.hpp>
 #include <fuse_variables/position_2d_stamped.hpp>
 #include <fuse_variables/velocity_angular_2d_stamped.hpp>
 #include <fuse_variables/velocity_linear_2d_stamped.hpp>
@@ -99,13 +100,13 @@ public:
     const std::string & source,
     const fuse_variables::Position2DStamped & position1,
     const fuse_variables::Orientation2DStamped & yaw1,
-    const fuse_variables::Orientation2DStamped & steering1,
+    const fuse_variables::SteeringAngle2DStamped & steering1,
     const fuse_variables::VelocityLinear2DStamped & linear_velocity1,
     const fuse_variables::VelocityAngular2DStamped & yaw_velocity1,
     const fuse_variables::AccelerationLinear2DStamped & linear_acceleration1,
     const fuse_variables::Position2DStamped & position2,
     const fuse_variables::Orientation2DStamped & yaw2,
-    const fuse_variables::Orientation2DStamped & steering2,
+    const fuse_variables::SteeringAngle2DStamped & steering2,
     const fuse_variables::VelocityLinear2DStamped & linear_velocity2,
     const fuse_variables::VelocityAngular2DStamped & yaw_velocity2,
     const fuse_variables::AccelerationLinear2DStamped & linear_acceleration2,

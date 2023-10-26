@@ -1307,7 +1307,6 @@ inline void scaleProcessNoiseCovariance(
     velocity * process_noise_covariance.topLeftCorner<3, 3>() * velocity.transpose();
 }
 
-
 }  // namespace common
 
 }  // namespace fuse_models
