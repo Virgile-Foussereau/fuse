@@ -89,7 +89,7 @@ if(BUILD_TESTING)
   # This is because these two files have unsuitable copyrights
   set(_linter_excludes
     test/test_sensor_proc.cpp
-    #test/test_unicycle_2d.cpp
+    test/test_unicycle_2d.cpp
   )
   set(AMENT_LINT_AUTO_FILE_EXCLUDE ${_linter_excludes})
   ament_lint_auto_find_test_dependencies()
