@@ -226,7 +226,7 @@ inline void predict(
     // Jacobian wrt vel_yaw1
     if (jacobians[4]) {
       Eigen::Map<fuse_core::Vector9d> jacobian(jacobians[4]);
-      jacobian << 0, 0, dt, 0, 0, 0, 1, 0, 0;
+      jacobian << 0, 0, dt, 0, 0, 0, 0, 0, 0;
     }
 
     // Jacobian wrt acc_linear1
